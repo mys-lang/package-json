@@ -254,8 +254,18 @@ def _decode_string(reader: StringReader) -> String:
         elif ch == '\\':
             ch = reader.get()
 
-            if ch in "\"/\\bfrnt":
+            if ch in "\"/\\":
                 value += ch
+            elif ch == 'b':
+                value += '\b'
+            elif ch == 'f':
+                value += '\f'
+            elif ch == 'r':
+                value += '\r'
+            elif ch == 'n':
+                value += '\n'
+            elif ch == 't':
+                value += '\t'
             elif ch == 'u':
                 value += char(i32(reader.read_exactly(4), 16))
             else:
