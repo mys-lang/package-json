@@ -136,7 +136,7 @@ def _encode(value: Object) -> string:
     items = []
 
     for key, value in self.items:
-        items += f"{_encode(key)}: {_encode(item)}"
+        items += f"{_encode(key)}: {encode(item)}"
 
     encoded = "{"
     encoded += string.join(items, ", ")
@@ -148,7 +148,7 @@ def _encode(value: List) -> string:
     items = []
 
     for item in self.items:
-        items += _encode(item)
+        items += encode(item)
 
     encoded = "["
     encoded += string.join(items, ", ")
@@ -174,7 +174,11 @@ def _encode(value: Bool) -> string:
 def _encode(value: Null) -> string:
     return "null"
 
-def _encode(value: Value -> string:
+def encode(value: Value) -> string:
+    """Encode into a string.
+
+    """
+
     match value:
         case Object() as object_value:
             return _encode(object_value)
@@ -192,13 +196,6 @@ def _encode(value: Value -> string:
             return _encode(null_value)
         case _:
             raise UnreachableError()
-
-def encode(value: Value) -> string:
-    """Encode into a string.
-
-    """
-
-    return _encode(value)
 
 @trait
 class StackValue:
