@@ -5,55 +5,55 @@ class Value:
     """
 
     def set_object(self, items: {string: Value}):
-        raise Error()
+        raise GeneralError()
 
     def get_object(self) -> {string: Value}:
-        raise Error()
+        raise GeneralError()
 
-    def []=(self, key: string, value: Value):
-        raise Error()
+    def __setitem__(self, key: string, value: Value):
+        raise GeneralError()
 
-    def [](self, key: string) -> Value:
-        raise Error()
+    def __getitem__(self, key: string) -> Value:
+        raise GeneralError()
 
     def set_list(self, items: [Value]):
-        raise Error()
+        raise GeneralError()
 
     def get_list(self) -> [Value]:
-        raise Error()
+        raise GeneralError()
 
-    def []=(self, index: i64, value: Value):
-        raise Error()
+    def __setitem__(self, index: i64, value: Value):
+        raise GeneralError()
 
-    def [](self, index: i64) -> Value:
-        raise Error()
+    def __getitem__(self, index: i64) -> Value:
+        raise GeneralError()
 
     def set_string(self, value: string):
-        raise Error()
+        raise GeneralError()
 
     def get_string(self) -> string:
-        raise Error()
+        raise GeneralError()
 
     def set_integer(self, value: i64):
-        raise Error()
+        raise GeneralError()
 
     def get_integer(self) -> i64:
-        raise Error()
+        raise GeneralError()
 
     def set_float(self, value: f64):
-        raise Error()
+        raise GeneralError()
 
     def get_float(self) -> f64:
-        raise Error()
+        raise GeneralError()
 
     def set_bool(self, value: bool):
-        raise Error()
+        raise GeneralError()
 
     def get_bool(self) -> bool:
-        raise Error()
+        raise GeneralError()
 
     def get_null(self):
-        raise Error()
+        raise GeneralError()
 
 class Object(Value):
 
@@ -65,10 +65,10 @@ class Object(Value):
     def get_object(self) -> {string: Value}:
         return self.items
 
-    def []=(self, key: string, value: Value):
+    def __setitem__(self, key: string, value: Value):
         return self.items[key]
 
-    def [](self, key: string) -> Value:
+    def __getitem__(self, key: string) -> Value:
         return self.items[key]
 
 class List(Value):
@@ -81,10 +81,10 @@ class List(Value):
     def get_list(self) -> [Value]:
         return self.items
 
-    def []=(self, index: i64, value: Value):
+    def __setitem__(self, index: i64, value: Value):
         return self.items[index] = value
 
-    def [](self, index: i64) -> Value:
+    def __getitem__(self, index: i64) -> Value:
         return self.items[index]
 
 class String(Value):
@@ -207,7 +207,7 @@ class StackValue:
         self.expecting_another_item = True
 
     def handle_colon(self):
-        raise Error()
+        raise GeneralError()
 
     def finalize(self, ch: char):
         pass
@@ -231,17 +231,17 @@ class StackObject(StackValue):
 
     def handle_colon(self):
         if self.key is None:
-            raise Error()
+            raise GeneralError()
 
     def finalize(self, ch: char):
         if self.key is not None:
-            raise Error()
+            raise GeneralError()
 
         if self.expecting_another_item:
-            raise Error()
+            raise GeneralError()
 
         if ch != '}':
-            raise Error()
+            raise GeneralError()
 
 class StackList(StackValue):
 
@@ -254,10 +254,10 @@ class StackList(StackValue):
 
     def finalize(self, ch: char):
         if self.expecting_another_item:
-            raise Error()
+            raise GeneralError()
 
         if ch != ']':
-            raise Error()
+            raise GeneralError()
 
 def _decode_string(reader: StringReader) -> String:
     value = ""
@@ -285,9 +285,9 @@ def _decode_string(reader: StringReader) -> String:
             elif ch == 'u':
                 value += char(i32(reader.read_exactly(4), 16))
             else:
-                raise Error()
+                raise GeneralError()
         elif ch == '':
-            raise Error()
+            raise GeneralError()
         else:
             value += ch
 
@@ -298,19 +298,19 @@ def _decode_number(reader: StringReader, ch: char) -> Value:
 
 def _decode_true(reader: StringReader) -> Bool:
     if reader.read(3) != "rue":
-        raise Error()
+        raise GeneralError()
 
     return Bool(True)
 
 def _decode_false(reader: StringReader) -> Bool:
     if reader.read(4) != "alse":
-        raise Error()
+        raise GeneralError()
 
     return Bool(False)
 
 def _decode_null(reader: StringReader) -> Null:
     if reader.read(3) != "ull":
-        raise Error()
+        raise GeneralError()
 
     return Null()
 
@@ -356,19 +356,19 @@ def decode(data: string) -> Value:
         elif ch == '':
             break
         else:
-            raise Error()
+            raise GeneralError()
 
         if root is None:
             root = value
         elif stack.length() > 0:
             stack[-1].handle_value(value)
         else:
-            raise Error()
+            raise GeneralError()
 
     if stack.length() != 0:
-        raise Error()
+        raise GeneralError()
     elif root is None:
-        raise Error()
+        raise GeneralError()
 
     return root
 
