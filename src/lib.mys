@@ -5,58 +5,57 @@ class Value:
     """
 
     def set_object(self, items: {string: Value}):
-        raise GeneralError()
+        raise NotImplementedError()
 
     def get_object(self) -> {string: Value}:
-        raise GeneralError()
+        raise NotImplementedError()
 
     def __setitem__(self, key: string, value: Value):
-        raise GeneralError()
+        raise NotImplementedError()
 
     def __getitem__(self, key: string) -> Value:
-        raise GeneralError()
+        raise NotImplementedError()
 
     def set_list(self, items: [Value]):
-        raise GeneralError()
+        raise NotImplementedError()
 
     def get_list(self) -> [Value]:
-        raise GeneralError()
+        raise NotImplementedError()
 
     def __setitem__(self, index: i64, value: Value):
-        raise GeneralError()
+        raise NotImplementedError()
 
     def __getitem__(self, index: i64) -> Value:
-        raise GeneralError()
+        raise NotImplementedError()
 
     def set_string(self, value: string):
-        raise GeneralError()
+        raise NotImplementedError()
 
     def get_string(self) -> string:
-        raise GeneralError()
+        raise NotImplementedError()
 
     def set_integer(self, value: i64):
-        raise GeneralError()
+        raise NotImplementedError()
 
     def get_integer(self) -> i64:
-        raise GeneralError()
+        raise NotImplementedError()
 
     def set_float(self, value: f64):
-        raise GeneralError()
+        raise NotImplementedError()
 
     def get_float(self) -> f64:
-        raise GeneralError()
+        raise NotImplementedError()
 
     def set_bool(self, value: bool):
-        raise GeneralError()
+        raise NotImplementedError()
 
     def get_bool(self) -> bool:
-        raise GeneralError()
+        raise NotImplementedError()
 
     def get_null(self):
-        raise GeneralError()
+        raise NotImplementedError()
 
 class Object(Value):
-
     items: {string: Value}
 
     def set_object(self, items: {string: Value}):
@@ -66,13 +65,12 @@ class Object(Value):
         return self.items
 
     def __setitem__(self, key: string, value: Value):
-        return self.items[key]
+        self.items[key] = value
 
     def __getitem__(self, key: string) -> Value:
         return self.items[key]
 
 class List(Value):
-
     items: [Value]
 
     def set_list(self, items: [Value]):
@@ -82,13 +80,12 @@ class List(Value):
         return self.items
 
     def __setitem__(self, index: i64, value: Value):
-        return self.items[index] = value
+        self.items[index] = value
 
     def __getitem__(self, index: i64) -> Value:
         return self.items[index]
 
 class String(Value):
-
     value: string
 
     def set_string(self, value: string):
@@ -98,7 +95,6 @@ class String(Value):
         return self.value
 
 class Integer(Value):
-
     value: i64
 
     def set_integer(self, value: i64):
@@ -108,7 +104,6 @@ class Integer(Value):
         return self.value
 
 class Float(Value):
-
     value: f64
 
     def set_float(self, value: f64):
@@ -118,7 +113,6 @@ class Float(Value):
         return self.value
 
 class Bool(Value):
-
     value: bool
 
     def set_bool(self, value: bool):
@@ -133,25 +127,21 @@ class Null(Value):
         pass
 
 def _encode(value: Object) -> string:
-    items = []
-
-    for key, value in self.items:
-        items += f"{_encode(key)}: {encode(item)}"
-
     encoded = "{"
-    encoded += string.join(items, ", ")
+    encoded += ", ".join([
+        items.append(f"{_encode(key)}: {encode(item)}")
+        for key, value in self.items
+    ])
     encoded += "}"
 
     return encoded
 
 def _encode(value: List) -> string:
-    items = []
-
-    for item in self.items:
-        items += encode(item)
-
     encoded = "["
-    encoded += string.join(items, ", ")
+    encoded += ", ".join([
+        items.append(encode(item))
+        for item in self.items
+    ])
     encoded += "]"
 
     return encoded
@@ -207,13 +197,12 @@ class StackValue:
         self.expecting_another_item = True
 
     def handle_colon(self):
-        raise GeneralError()
+        raise NotImplementedError()
 
     def finalize(self, ch: char):
         pass
 
 class StackObject(StackValue):
-
     value: Object
     key: String
     expecting_another_item: bool
@@ -231,20 +220,19 @@ class StackObject(StackValue):
 
     def handle_colon(self):
         if self.key is None:
-            raise GeneralError()
+            raise NotImplementedError()
 
     def finalize(self, ch: char):
         if self.key is not None:
-            raise GeneralError()
+            raise NotImplementedError()
 
         if self.expecting_another_item:
-            raise GeneralError()
+            raise NotImplementedError()
 
         if ch != '}':
-            raise GeneralError()
+            raise NotImplementedError()
 
 class StackList(StackValue):
-
     value: List
     expecting_another_item: bool
 
@@ -254,10 +242,10 @@ class StackList(StackValue):
 
     def finalize(self, ch: char):
         if self.expecting_another_item:
-            raise GeneralError()
+            raise NotImplementedError()
 
         if ch != ']':
-            raise GeneralError()
+            raise NotImplementedError()
 
 def _decode_string(reader: StringReader) -> String:
     value = ""
@@ -285,9 +273,9 @@ def _decode_string(reader: StringReader) -> String:
             elif ch == 'u':
                 value += char(i32(reader.read_exactly(4), 16))
             else:
-                raise GeneralError()
+                raise NotImplementedError()
         elif ch == '':
-            raise GeneralError()
+            raise NotImplementedError()
         else:
             value += ch
 
@@ -298,19 +286,19 @@ def _decode_number(reader: StringReader, ch: char) -> Value:
 
 def _decode_true(reader: StringReader) -> Bool:
     if reader.read(3) != "rue":
-        raise GeneralError()
+        raise NotImplementedError()
 
     return Bool(True)
 
 def _decode_false(reader: StringReader) -> Bool:
     if reader.read(4) != "alse":
-        raise GeneralError()
+        raise NotImplementedError()
 
     return Bool(False)
 
 def _decode_null(reader: StringReader) -> Null:
     if reader.read(3) != "ull":
-        raise GeneralError()
+        raise NotImplementedError()
 
     return Null()
 
@@ -356,19 +344,19 @@ def decode(data: string) -> Value:
         elif ch == '':
             break
         else:
-            raise GeneralError()
+            raise NotImplementedError()
 
         if root is None:
             root = value
         elif stack.length() > 0:
             stack[-1].handle_value(value)
         else:
-            raise GeneralError()
+            raise NotImplementedError()
 
     if stack.length() != 0:
-        raise GeneralError()
+        raise NotImplementedError()
     elif root is None:
-        raise GeneralError()
+        raise NotImplementedError()
 
     return root
 
@@ -387,50 +375,50 @@ def test_single_value():
 
     encoded = "{}"
     decoded = decode(encoded)
-    assert_eq(decoded.get_object(), {})
-    assert_eq(encode(decoded), encoded)
+    assert decoded.get_object() == {}
+    assert encode(decoded) == encoded
 
     encoded = "[]"
     decoded = decode(encoded)
-    assert_eq(decoded.get_list(), [])
-    assert_eq(encode(decoded), encoded)
+    assert decoded.get_list() == []
+    assert encode(decoded) == encoded
 
     encoded = "\"hi\""
     decoded = decode(encoded)
-    assert_eq(decoded.get_string(), "hi")
-    assert_eq(encode(decoded), encoded)
+    assert decoded.get_string() == "hi"
+    assert encode(decoded) == encoded
 
     encoded = "1"
     decoded = decode(encoded)
-    assert_eq(decoded.get_integer(), 1)
-    assert_eq(encode(decoded), encoded)
+    assert decoded.get_integer() == 1
+    assert encode(decoded) == encoded
 
     encoded = "2.0"
     decoded = decode(encoded)
-    assert_eq(decoded.get_float(), 2.0)
-    assert_eq(encode(decoded), encoded)
+    assert decoded.get_float() == 2.0
+    assert encode(decoded) == encoded
 
     encoded = "false"
     decoded = decode(encoded)
-    assert_false(decoded.get_bool())
-    assert_eq(encode(decoded), encoded)
+    assert not decoded.get_bool()
+    assert encode(decoded) == encoded
 
     encoded = "null"
     decoded = decode(encoded)
     decoded.get_null()
-    assert_eq(encode(decoded), encoded)
+    assert encode(decoded) == encoded
 
 @test
 def test_nested_objects_and_lists():
     encoded = "{\"a\": [true, [4, 2, 3], {\"f\": {\"b\": 1, \"c\": null}}, 55]}"
     decoded = decode(encoded)
-    assert_true(decoded["a"][0].get_bool())
-    assert_eq(decoded["a"][1][0].get_integer(), 4)
-    assert_eq(decoded["a"][1][1].get_integer(), 2)
-    assert_eq(decoded["a"][1][2].get_integer(), 3)
-    assert_eq(decoded["a"][2]["f"]["b"].get_integer(), 1)
+    assert decoded["a"][0].get_bool()
+    assert decoded["a"][1][0].get_integer() == 4
+    assert decoded["a"][1][1].get_integer() == 2
+    assert decoded["a"][1][2].get_integer() == 3
+    assert decoded["a"][2]["f"]["b"].get_integer() == 1
     decoded["a"][2]["f"]["c"].get_null()
-    assert_eq(decoded["a"][3].get_integer(), 55)
+    assert decoded["a"][3].get_integer() == 55
 
 @test
 def test_build_json_document():
@@ -452,10 +440,10 @@ def test_build_json_document():
         ])
     })
     decoded = decode(encode(decoded))
-    assert_true(decoded["a"][0].get_bool())
-    assert_eq(decoded["a"][1][0].get_integer(), 4)
-    assert_eq(decoded["a"][1][1].get_integer(), 2)
-    assert_eq(decoded["a"][1][2].get_integer(), 3)
-    assert_eq(decoded["a"][2]["f"]["b"].get_integer(), 1)
+    assert decoded["a"][0].get_bool()
+    assert decoded["a"][1][0].get_integer() == 4
+    assert decoded["a"][1][1].get_integer() == 2
+    assert decoded["a"][1][2].get_integer() == 3
+    assert decoded["a"][2]["f"]["b"].get_integer() == 1
     decoded["a"][2]["f"]["c"].get_null()
-    assert_eq(decoded["a"][3].get_integer(), 55)
+    assert decoded["a"][3].get_integer() == 55
