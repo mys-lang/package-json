@@ -10,12 +10,12 @@ class StringDecoder:
         self._pos = 0
 
     def object_available(self) -> bool:
-        self._skip_whitespaces()
+        self._skip_space()
 
         return self._get() in "{,"
 
     def object_key(self) -> string:
-        self._skip_whitespaces()
+        self._skip_space()
         key = self.string()
 
         if self._get() != ':':
@@ -24,7 +24,7 @@ class StringDecoder:
         return key
 
     def array_available(self) -> bool:
-        self._skip_whitespaces()
+        self._skip_space()
 
         return self._get() in "[,"
 
@@ -32,7 +32,7 @@ class StringDecoder:
         pass
 
     def string(self) -> string:
-        self._skip_whitespaces()
+        self._skip_space()
 
         if self._get() != '"':
             raise JsonError("String not found.")
@@ -51,7 +51,7 @@ class StringDecoder:
         return self._data[begin:self._pos - 1]
 
     def primitive(self) -> string:
-        self._skip_whitespaces()
+        self._skip_space()
         begin = self._pos
 
         while True:
@@ -74,7 +74,7 @@ class StringDecoder:
 
         return ch
 
-    def _skip_whitespaces(self):
+    def _skip_space(self):
         while self._data[self._pos].is_space():
             self._pos += 1
 
