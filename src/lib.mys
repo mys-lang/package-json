@@ -1,5 +1,8 @@
 from string import StringReader
 
+class JsonError(Error):
+    message: string
+
 @trait
 class Value:
     """A value in a JSON document.
@@ -134,67 +137,6 @@ class Null(Value):
     def get_null(self):
         pass
 
-# def _encode(value: Object) -> string:
-#     encoded = "{"
-#     encoded += ", ".join([
-#         items.append(f"{_encode(key)}: {encode(item)}")
-#         for key, value in self.items
-#     ])
-#     encoded += "}"
-#
-#     return encoded
-#
-# def _encode(value: List) -> string:
-#     encoded = "["
-#     encoded += ", ".join([
-#         items.append(encode(item))
-#         for item in self.items
-#     ])
-#     encoded += "]"
-#
-#     return encoded
-#
-# def _encode(value: String) -> string:
-#     return f"\"{value}\""
-#
-# def _encode(value: Integer) -> string:
-#     return str(value.value)
-#
-# def _encode(value: Float) -> string:
-#     return str(value.value)
-#
-# def _encode(value: Bool) -> string:
-#     if value.value:
-#         return "true"
-#     else:
-#         return "false"
-#
-# def _encode(value: Null) -> string:
-#     return "null"
-#
-# def encode(value: Value) -> string:
-#     """Encode into a string.
-#
-#     """
-#
-#     match value:
-#         case Object() as object_value:
-#             return _encode(object_value)
-#         case List() as list_value:
-#             return _encode(list_value)
-#         case String() as string_value:
-#             return _encode(string_value)
-#         case Integer() as integer_value:
-#             return _encode(integer_value)
-#         case Float() as float_value:
-#             return _encode(float_value)
-#         case Bool() as bool_value:
-#             return _encode(bool_value)
-#         case Null() as null_value:
-#             return _encode(null_value)
-#         case _:
-#             raise UnreachableError()
-
 @trait
 class StackValue:
 
@@ -290,9 +232,9 @@ def _decode_string(reader: StringReader) -> String:
                               | i32(reader.get()) << 8
                               | i32(reader.get()) << 0)
             else:
-                raise NotImplementedError()
+                raise JsonError(f"Unexpected character '{ch}'.")
         elif ch == '':
-            raise NotImplementedError()
+            raise JsonError("Out of data when parsing string.")
         else:
             value += ch
 
@@ -315,19 +257,19 @@ def _decode_number(reader: StringReader, ch: char) -> Value:
 
 def _decode_true(reader: StringReader) -> Bool:
     if reader.read(3) != "rue":
-        raise NotImplementedError()
+        raise JsonError("Corrupt true.")
 
     return Bool(True)
 
 def _decode_false(reader: StringReader) -> Bool:
     if reader.read(4) != "alse":
-        raise NotImplementedError()
+        raise JsonError("Corrupt false.")
 
     return Bool(False)
 
 def _decode_null(reader: StringReader) -> Null:
     if reader.read(3) != "ull":
-        raise NotImplementedError()
+        raise JsonError("Corrupt null.")
 
     return Null()
 
@@ -376,22 +318,22 @@ def decode(data: string) -> Value:
         elif ch == '':
             break
         else:
-            raise NotImplementedError()
+            raise JsonError(f"Invalid character '{ch}'")
 
         if root is None:
             root = value
         elif len(stack) > 0:
             stack[-1].handle_value(value)
-        elif ch not in "{[":
-            raise NotImplementedError()
+        else:
+            raise JsonError("Unexpected value.")
 
         if stack_value is not None:
             stack += stack_value
 
     if len(stack) != 0:
-        raise NotImplementedError()
+        raise JsonError("Missing object or list end.")
     elif root is None:
-        raise NotImplementedError()
+        raise JsonError("No root value found.")
 
     return root
 
@@ -471,30 +413,86 @@ def test_nested_objects_and_lists():
     decoded.getitem1("a").getitem2(2).getitem1("f").getitem1("c").get_null()
     assert decoded.getitem1("a").getitem2(3).get_integer() == 55
 
-# @test
-# def test_build_json_document():
-#     decoded = Object({
-#         "a": List([
-#             Bool(True),
-#             List([
-#                 Integer(4),
-#                 Integer(2),
-#                 Integer(3)
-#             ]),
-#             Object({
-#                 "f": Object({
-#                     "b": Integer(1),
-#                     "c": Null()
-#                 })
-#             }),
-#             Integer(55)
-#         ])
-#     })
-#     decoded = decode(encode(decoded))
-#     assert decoded["a"][0].get_bool()
-#     assert decoded["a"][1][0].get_integer() == 4
-#     assert decoded["a"][1][1].get_integer() == 2
-#     assert decoded["a"][1][2].get_integer() == 3
-#     assert decoded["a"][2]["f"]["b"].get_integer() == 1
-#     decoded["a"][2]["f"]["c"].get_null()
-#     assert decoded["a"][3].get_integer() == 55
+@test
+def test_missing_closing_brace():
+    encoded = "{"
+
+    try:
+        message = ""
+        decode(encoded)
+    except JsonError as e:
+        message = e.message
+
+    assert message == "Missing object or list end."
+
+@test
+def test_missing_closing_bracket():
+    encoded = "["
+
+    try:
+        message = ""
+        decode(encoded)
+    except JsonError as e:
+        message = e.message
+
+    assert message == "Missing object or list end."
+
+@test
+def test_missing_string_end():
+    encoded = "\"asdasd"
+
+    try:
+        message = ""
+        decode(encoded)
+    except JsonError as e:
+        message = e.message
+
+    assert message == "Out of data when parsing string."
+
+@test
+def test_corrupt_null():
+    encoded = "nuls"
+
+    try:
+        message = ""
+        decode(encoded)
+    except JsonError as e:
+        message = e.message
+
+    assert message == "Corrupt null."
+
+@test
+def test_corrupt_null_short():
+    encoded = "nul"
+
+    try:
+        message = ""
+        decode(encoded)
+    except JsonError as e:
+        message = e.message
+
+    assert message == "Corrupt null."
+
+@test
+def test_corrupt_true():
+    encoded = "truu"
+
+    try:
+        message = ""
+        decode(encoded)
+    except JsonError as e:
+        message = e.message
+
+    assert message == "Corrupt true."
+
+@test
+def test_corrupt_false():
+    encoded = "fALSE"
+
+    try:
+        message = ""
+        decode(encoded)
+    except JsonError as e:
+        message = e.message
+
+    assert message == "Corrupt false."
