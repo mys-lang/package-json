@@ -1,131 +1,139 @@
-# @trait
-# class Value:
-#     """A value in a JSON document.
-# 
-#     """
-# 
-#     def set_object(self, items: {string: Value}):
-#         raise NotImplementedError()
-# 
-#     def get_object(self) -> {string: Value}:
-#         raise NotImplementedError()
-# 
-#     def __setitem__(self, key: string, value: Value):
-#         raise NotImplementedError()
-# 
-#     def __getitem__(self, key: string) -> Value:
-#         raise NotImplementedError()
-# 
-#     def set_list(self, items: [Value]):
-#         raise NotImplementedError()
-# 
-#     def get_list(self) -> [Value]:
-#         raise NotImplementedError()
-# 
-#     def __setitem__(self, index: i64, value: Value):
-#         raise NotImplementedError()
-# 
-#     def __getitem__(self, index: i64) -> Value:
-#         raise NotImplementedError()
-# 
-#     def set_string(self, value: string):
-#         raise NotImplementedError()
-# 
-#     def get_string(self) -> string:
-#         raise NotImplementedError()
-# 
-#     def set_integer(self, value: i64):
-#         raise NotImplementedError()
-# 
-#     def get_integer(self) -> i64:
-#         raise NotImplementedError()
-# 
-#     def set_float(self, value: f64):
-#         raise NotImplementedError()
-# 
-#     def get_float(self) -> f64:
-#         raise NotImplementedError()
-# 
-#     def set_bool(self, value: bool):
-#         raise NotImplementedError()
-# 
-#     def get_bool(self) -> bool:
-#         raise NotImplementedError()
-# 
-#     def get_null(self):
-#         raise NotImplementedError()
-# 
-# class Object(Value):
-#     items: {string: Value}
-# 
-#     def set_object(self, items: {string: Value}):
-#         self.items = items
-# 
-#     def get_object(self) -> {string: Value}:
-#         return self.items
-# 
-#     def __setitem__(self, key: string, value: Value):
-#         self.items[key] = value
-# 
-#     def __getitem__(self, key: string) -> Value:
-#         return self.items[key]
-# 
-# class List(Value):
-#     items: [Value]
-# 
-#     def set_list(self, items: [Value]):
-#         self.items = items
-# 
-#     def get_list(self) -> [Value]:
-#         return self.items
-# 
-#     def __setitem__(self, index: i64, value: Value):
-#         self.items[index] = value
-# 
-#     def __getitem__(self, index: i64) -> Value:
-#         return self.items[index]
-# 
-# class String(Value):
-#     value: string
-# 
-#     def set_string(self, value: string):
-#         self.value = value
-# 
-#     def get_string(self) -> string:
-#         return self.value
-# 
-# class Integer(Value):
-#     value: i64
-# 
-#     def set_integer(self, value: i64):
-#         self.value = value
-# 
-#     def get_integer(self) -> i64:
-#         return self.value
-# 
+from string import StringReader
+
+@trait
+class Value:
+    """A value in a JSON document.
+
+    """
+
+    def set_object(self, items: {string: Value}):
+        raise NotImplementedError()
+
+    def get_object(self) -> {string: Value}:
+        raise NotImplementedError()
+
+    def setitem1(self, key: string, value: Value):
+        raise NotImplementedError()
+
+    def getitem1(self, key: string) -> Value:
+        raise NotImplementedError()
+
+    def set_list(self, items: [Value]):
+        raise NotImplementedError()
+
+    def get_list(self) -> [Value]:
+        raise NotImplementedError()
+
+    def setitem2(self, index: i64, value: Value):
+        raise NotImplementedError()
+
+    def getitem2(self, index: i64) -> Value:
+        raise NotImplementedError()
+
+    def set_string(self, value: string):
+        raise NotImplementedError()
+
+    def get_string(self) -> string:
+        raise NotImplementedError()
+
+    def set_integer(self, value: i64):
+        raise NotImplementedError()
+
+    def get_integer(self) -> i64:
+        raise NotImplementedError()
+
+    def set_float(self, value: f64):
+        raise NotImplementedError()
+
+    def get_float(self) -> f64:
+        raise NotImplementedError()
+
+    def set_bool(self, value: bool):
+        raise NotImplementedError()
+
+    def get_bool(self) -> bool:
+        raise NotImplementedError()
+
+    def get_null(self):
+        raise NotImplementedError()
+
+class Object(Value):
+    items: {string: Value}
+
+    def __init__(self):
+        self.items = {}
+
+    def set_object(self, items: {string: Value}):
+        self.items = items
+
+    def get_object(self) -> {string: Value}:
+        return self.items
+
+    def setitem1(self, key: string, value: Value):
+        self.items[key] = value
+
+    def getitem1(self, key: string) -> Value:
+        return self.items[key]
+
+class List(Value):
+    items: [Value]
+
+    def __init__(self):
+        self.items = []
+
+    def set_list(self, items: [Value]):
+        self.items = items
+
+    def get_list(self) -> [Value]:
+        return self.items
+
+    def setitem2(self, index: i64, value: Value):
+        self.items[index] = value
+
+    def getitem2(self, index: i64) -> Value:
+        return self.items[index]
+
+class String(Value):
+    value: string
+
+    def set_string(self, value: string):
+        self.value = value
+
+    def get_string(self) -> string:
+        return self.value
+
+class Integer(Value):
+    value: i64
+
+    def set_integer(self, value: i64):
+        self.value = value
+
+    def get_integer(self) -> i64:
+        return self.value
+
 # class Float(Value):
 #     value: f64
-# 
+#
 #     def set_float(self, value: f64):
 #         self.value = value
-# 
+#
 #     def get_float(self) -> f64:
 #         return self.value
-# 
-# class Bool(Value):
-#     value: bool
-# 
-#     def set_bool(self, value: bool):
-#         self.value = value
-# 
-#     def get_bool(self) -> bool:
-#         return self.value
-# 
-# class Null(Value):
-# 
-#     def get_null(self):
-#         pass
-# 
+
+class Bool(Value):
+    value: bool
+
+    def set_bool(self, value: bool):
+        self.value = value
+
+    def get_bool(self) -> bool:
+        return self.value
+
+class Null(Value):
+
+    def get_null(self):
+        pass
+
 # def _encode(value: Object) -> string:
 #     encoded = "{"
 #     encoded += ", ".join([
@@ -133,9 +141,9 @@
 #         for key, value in self.items
 #     ])
 #     encoded += "}"
-# 
+#
 #     return encoded
-# 
+#
 # def _encode(value: List) -> string:
 #     encoded = "["
 #     encoded += ", ".join([
@@ -143,32 +151,32 @@
 #         for item in self.items
 #     ])
 #     encoded += "]"
-# 
+#
 #     return encoded
-# 
+#
 # def _encode(value: String) -> string:
 #     return f"\"{value}\""
-# 
+#
 # def _encode(value: Integer) -> string:
 #     return str(value.value)
-# 
+#
 # def _encode(value: Float) -> string:
 #     return str(value.value)
-# 
+#
 # def _encode(value: Bool) -> string:
 #     if value.value:
 #         return "true"
 #     else:
 #         return "false"
-# 
+#
 # def _encode(value: Null) -> string:
 #     return "null"
-# 
+#
 # def encode(value: Value) -> string:
 #     """Encode into a string.
-# 
+#
 #     """
-# 
+#
 #     match value:
 #         case Object() as object_value:
 #             return _encode(object_value)
@@ -186,240 +194,283 @@
 #             return _encode(null_value)
 #         case _:
 #             raise UnreachableError()
-# 
-# @trait
-# class StackValue:
-# 
-#     def handle_value(self, value: Value):
-#         pass
-# 
-#     def handle_comma(self):
-#         self.expecting_another_item = True
-# 
-#     def handle_colon(self):
-#         raise NotImplementedError()
-# 
-#     def finalize(self, ch: char):
-#         pass
-# 
-# class StackObject(StackValue):
-#     value: Object
-#     key: String
-#     expecting_another_item: bool
-# 
-#     def handle_value(self, value: Value):
-#         if self.key is None:
-#             self._handle_key(value)
-#         else:
-#             self.value.items[self.key] = value
-#             self.key = None
-#             self.expecting_another_item = False
-# 
-#     def _handle_key(self, value: String):
-#         self.key = value
-# 
-#     def handle_colon(self):
-#         if self.key is None:
-#             raise NotImplementedError()
-# 
-#     def finalize(self, ch: char):
-#         if self.key is not None:
-#             raise NotImplementedError()
-# 
-#         if self.expecting_another_item:
-#             raise NotImplementedError()
-# 
-#         if ch != '}':
-#             raise NotImplementedError()
-# 
-# class StackList(StackValue):
-#     value: List
-#     expecting_another_item: bool
-# 
-#     def handle_value(self, value: Value):
-#         self.value.items += value
-#         self.expecting_another_item = False
-# 
-#     def finalize(self, ch: char):
-#         if self.expecting_another_item:
-#             raise NotImplementedError()
-# 
-#         if ch != ']':
-#             raise NotImplementedError()
-# 
-# def _decode_string(reader: StringReader) -> String:
-#     value = ""
-# 
-#     while True:
-#         ch = reader.get()
-# 
-#         if ch == '\"':
-#             break
-#         elif ch == '\\':
-#             ch = reader.get()
-# 
-#             if ch in "\"/\\":
-#                 value += ch
-#             elif ch == 'b':
-#                 value += '\b'
-#             elif ch == 'f':
-#                 value += '\f'
-#             elif ch == 'r':
-#                 value += '\r'
-#             elif ch == 'n':
-#                 value += '\n'
-#             elif ch == 't':
-#                 value += '\t'
-#             elif ch == 'u':
-#                 value += char(i32(reader.read_exactly(4), 16))
-#             else:
-#                 raise NotImplementedError()
-#         elif ch == '':
-#             raise NotImplementedError()
-#         else:
-#             value += ch
-# 
-#     return String(value)
-# 
-# def _decode_number(reader: StringReader, ch: char) -> Value:
-#     return Integer(-1)
-# 
-# def _decode_true(reader: StringReader) -> Bool:
-#     if reader.read(3) != "rue":
-#         raise NotImplementedError()
-# 
-#     return Bool(True)
-# 
-# def _decode_false(reader: StringReader) -> Bool:
-#     if reader.read(4) != "alse":
-#         raise NotImplementedError()
-# 
-#     return Bool(False)
-# 
-# def _decode_null(reader: StringReader) -> Null:
-#     if reader.read(3) != "ull":
-#         raise NotImplementedError()
-# 
-#     return Null()
-# 
-# def decode(data: string) -> Value:
-#     """Decode from string.
-# 
-#     """
-# 
-#     reader = StringReader(data)
-#     root = None
-#     stack = []
-# 
-#     while True:
-#         ch = reader.get()
-# 
-#         if ch == '{':
-#             value = Object()
-#             stack += StackObject(value)
-#         elif ch == '[':
-#             value = List()
-#             stack += StackList(value)
-#         elif ch in "}]":
-#             stack.pop().finalize(ch)
-#             continue
-#         elif ch in "\t\r\n ":
-#             continue
-#         elif ch == ':':
-#             stack[-1].handle_colon()
-#             continue
-#         elif ch == ',':
-#             stack[-1].handle_comma()
-#             continue
-#         elif ch == '\"':
-#             value = _decode_string(reader)
-#         elif ch in "-0123456789":
-#             value = _decode_number(reader, ch)
-#         elif ch == 't':
-#             value = _decode_true(reader)
-#         elif ch == 'f':
-#             value = _decode_false(reader)
-#         elif ch == 'n':
-#             value = _decode_null(reader)
-#         elif ch == '':
-#             break
-#         else:
-#             raise NotImplementedError()
-# 
-#         if root is None:
-#             root = value
-#         elif stack.length() > 0:
-#             stack[-1].handle_value(value)
-#         else:
-#             raise NotImplementedError()
-# 
-#     if stack.length() != 0:
-#         raise NotImplementedError()
-#     elif root is None:
-#         raise NotImplementedError()
-# 
-#     return root
-# 
-# @test
-# def test_single_value():
-#     datas = [
-#         "{}",
-#         "[]",
-#         "\"hi\""
-#         "1",
-#         "2.0",
-#         "true",
-#         "false",
-#         "null"
-#     ]
-# 
-#     encoded = "{}"
-#     decoded = decode(encoded)
-#     assert decoded.get_object() == {}
-#     assert encode(decoded) == encoded
-# 
-#     encoded = "[]"
-#     decoded = decode(encoded)
-#     assert decoded.get_list() == []
-#     assert encode(decoded) == encoded
-# 
-#     encoded = "\"hi\""
-#     decoded = decode(encoded)
-#     assert decoded.get_string() == "hi"
-#     assert encode(decoded) == encoded
-# 
-#     encoded = "1"
-#     decoded = decode(encoded)
-#     assert decoded.get_integer() == 1
-#     assert encode(decoded) == encoded
-# 
-#     encoded = "2.0"
-#     decoded = decode(encoded)
-#     assert decoded.get_float() == 2.0
-#     assert encode(decoded) == encoded
-# 
-#     encoded = "false"
-#     decoded = decode(encoded)
-#     assert not decoded.get_bool()
-#     assert encode(decoded) == encoded
-# 
-#     encoded = "null"
-#     decoded = decode(encoded)
-#     decoded.get_null()
-#     assert encode(decoded) == encoded
-# 
-# @test
-# def test_nested_objects_and_lists():
-#     encoded = "{\"a\": [true, [4, 2, 3], {\"f\": {\"b\": 1, \"c\": null}}, 55]}"
-#     decoded = decode(encoded)
-#     assert decoded["a"][0].get_bool()
-#     assert decoded["a"][1][0].get_integer() == 4
-#     assert decoded["a"][1][1].get_integer() == 2
-#     assert decoded["a"][1][2].get_integer() == 3
-#     assert decoded["a"][2]["f"]["b"].get_integer() == 1
-#     decoded["a"][2]["f"]["c"].get_null()
-#     assert decoded["a"][3].get_integer() == 55
-# 
+
+@trait
+class StackValue:
+
+    def handle_value(self, value: Value):
+        pass
+
+    def handle_comma(self):
+        self.expecting_another_item = True
+
+    def handle_colon(self):
+        raise NotImplementedError()
+
+    def finalize(self, ch: char):
+        pass
+
+class StackObject(StackValue):
+    value: Object
+    key: String
+    expecting_another_item: bool
+
+    def __init__(self, value: Object):
+        self.value = value
+        self.key = None
+        self.expecting_another_item = False
+
+    def handle_value(self, value: Value):
+        if self.key is None:
+            self.key = value
+        else:
+            self.value.items[self.key.get_string()] = value
+            self.key = None
+            self.expecting_another_item = False
+
+    def handle_colon(self):
+        if self.key is None:
+            raise NotImplementedError()
+
+    def finalize(self, ch: char):
+        if self.key is not None:
+            raise NotImplementedError()
+
+        if self.expecting_another_item:
+            raise NotImplementedError()
+
+        if ch != '}':
+            raise NotImplementedError()
+
+class StackList(StackValue):
+    value: List
+    expecting_another_item: bool
+
+    def __init__(self, value: List):
+        self.value = value
+        self.expecting_another_item = False
+
+    def handle_value(self, value: Value):
+        self.value.items += value
+        self.expecting_another_item = False
+
+    def finalize(self, ch: char):
+        if self.expecting_another_item:
+            raise NotImplementedError()
+
+        if ch != ']':
+            raise NotImplementedError()
+
+def _decode_string(reader: StringReader) -> String:
+    value = ""
+
+    while True:
+        ch = reader.get()
+
+        if ch == '\"':
+            break
+        elif ch == '\\':
+            ch = reader.get()
+
+            if ch in "\"/\\":
+                value += ch
+            elif ch == 'b':
+                value += '\b'
+            elif ch == 'f':
+                value += '\f'
+            elif ch == 'r':
+                value += '\r'
+            elif ch == 'n':
+                value += '\n'
+            elif ch == 't':
+                value += '\t'
+            elif ch == 'u':
+                value += char(i32(reader.get()) << 24
+                              | i32(reader.get()) << 16
+                              | i32(reader.get()) << 8
+                              | i32(reader.get()) << 0)
+            else:
+                raise NotImplementedError()
+        elif ch == '':
+            raise NotImplementedError()
+        else:
+            value += ch
+
+    return String(value)
+
+def _decode_number(reader: StringReader, ch: char) -> Value:
+    data = ""
+
+    while True:
+        data += ch
+        ch = reader.get()
+
+        if ch not in "0123456789":
+            if ch != '':
+                reader.unget()
+
+            break
+
+    return Integer(i64(data))
+
+def _decode_true(reader: StringReader) -> Bool:
+    if reader.read(3) != "rue":
+        raise NotImplementedError()
+
+    return Bool(True)
+
+def _decode_false(reader: StringReader) -> Bool:
+    if reader.read(4) != "alse":
+        raise NotImplementedError()
+
+    return Bool(False)
+
+def _decode_null(reader: StringReader) -> Null:
+    if reader.read(3) != "ull":
+        raise NotImplementedError()
+
+    return Null()
+
+def decode(data: string) -> Value:
+    """Decode from string.
+
+    """
+
+    reader = StringReader(data)
+    root: Value = None
+    stack: [StackValue] = []
+    value: Value = None
+    stack_value: StackValue = None
+
+    while True:
+        stack_value = None
+        ch = reader.get()
+
+        if ch == '{':
+            value = Object()
+            stack_value = StackObject(value)
+        elif ch == '[':
+            value = List()
+            stack_value = StackList(value)
+        elif ch in "}]":
+            stack.pop().finalize(ch)
+            continue
+        elif ch in "\t\r\n ":
+            continue
+        elif ch == ':':
+            stack[-1].handle_colon()
+            continue
+        elif ch == ',':
+            stack[-1].handle_comma()
+            continue
+        elif ch == '\"':
+            value = _decode_string(reader)
+        elif ch in "-0123456789":
+            value = _decode_number(reader, ch)
+        elif ch == 't':
+            value = _decode_true(reader)
+        elif ch == 'f':
+            value = _decode_false(reader)
+        elif ch == 'n':
+            value = _decode_null(reader)
+        elif ch == '':
+            break
+        else:
+            raise NotImplementedError()
+
+        if root is None:
+            root = value
+        elif len(stack) > 0:
+            stack[-1].handle_value(value)
+        elif ch not in "{[":
+            raise NotImplementedError()
+
+        if stack_value is not None:
+            stack += stack_value
+
+    if len(stack) != 0:
+        raise NotImplementedError()
+    elif root is None:
+        raise NotImplementedError()
+
+    return root
+
+@test
+def test_single_value():
+    encoded = "{}"
+    decoded = decode(encoded)
+    assert decoded.get_object() == {}
+    # assert encode(decoded) == encoded
+
+    encoded = "[]"
+    decoded = decode(encoded)
+    assert decoded.get_list() == []
+    # assert encode(decoded) == encoded
+
+    encoded = "\"hi\""
+    decoded = decode(encoded)
+    assert decoded.get_string() == "hi"
+    # assert encode(decoded) == encoded
+
+    encoded = "1"
+    decoded = decode(encoded)
+    assert decoded.get_integer() == 1
+    # assert encode(decoded) == encoded
+
+    # encoded = "2.0"
+    # decoded = decode(encoded)
+    # assert decoded.get_float() == 2.0
+    # assert encode(decoded) == encoded
+
+    encoded = "false"
+    decoded = decode(encoded)
+    assert not decoded.get_bool()
+    # assert encode(decoded) == encoded
+
+    encoded = "true"
+    decoded = decode(encoded)
+    assert decoded.get_bool()
+    # assert encode(decoded) == encoded
+
+    encoded = "null"
+    decoded = decode(encoded)
+    decoded.get_null()
+    # assert encode(decoded) == encoded
+
+@test
+def test_various():
+    encoded = "{\"a\": true}"
+    decoded = decode(encoded)
+    assert decoded.getitem1("a").get_bool()
+
+    encoded = "{\"b\": false, \"c\": []}"
+    decoded = decode(encoded)
+    assert not decoded.getitem1("b").get_bool()
+    assert len(decoded.getitem1("c").get_list()) == 0
+
+    encoded = "{\"d\": [1, null]}"
+    decoded = decode(encoded)
+    assert decoded.getitem1("d").getitem2(0).get_integer() == 1
+    decoded.getitem1("d").getitem2(1).get_null()
+
+    match decoded.getitem1("d").getitem2(1):
+        case Null():
+            pass
+        case _:
+            assert False
+
+@test
+def test_nested_objects_and_lists():
+    encoded = "{\"a\": [true, [4, 2, 3], {\"f\": {\"b\": 1, \"c\": null}}, 55]}"
+    decoded = decode(encoded)
+    assert decoded.getitem1("a").getitem2(0).get_bool()
+    assert decoded.getitem1("a").getitem2(1).getitem2(0).get_integer() == 4
+    assert decoded.getitem1("a").getitem2(1).getitem2(1).get_integer() == 2
+    assert decoded.getitem1("a").getitem2(1).getitem2(2).get_integer() == 3
+    assert decoded.getitem1("a").getitem2(2).getitem1("f").getitem1("b").get_integer() == 1
+    decoded.getitem1("a").getitem2(2).getitem1("f").getitem1("c").get_null()
+    assert decoded.getitem1("a").getitem2(3).get_integer() == 55
+
 # @test
 # def test_build_json_document():
 #     decoded = Object({
