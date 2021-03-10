@@ -274,7 +274,7 @@ def _decode_null(reader: StringReader) -> Null:
     return Null()
 
 def decode(data: string) -> Value:
-    """Decode from string.
+    """Decode given JSON string.
 
     """
 
