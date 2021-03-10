@@ -138,7 +138,7 @@ class Null(Value):
         pass
 
 @trait
-class StackValue:
+class _StackValue:
 
     def handle_value(self, value: Value):
         pass
@@ -152,7 +152,7 @@ class StackValue:
     def finalize(self, ch: char):
         pass
 
-class StackObject(StackValue):
+class _StackObject(_StackValue):
     value: Object
     key: String
     expecting_another_item: bool
@@ -184,7 +184,7 @@ class StackObject(StackValue):
         if ch != '}':
             raise NotImplementedError()
 
-class StackList(StackValue):
+class _StackList(_StackValue):
     value: List
     expecting_another_item: bool
 
@@ -280,9 +280,9 @@ def decode(data: string) -> Value:
 
     reader = StringReader(data)
     root: Value = None
-    stack: [StackValue] = []
+    stack: [_StackValue] = []
     value: Value = None
-    stack_value: StackValue = None
+    stack_value: _StackValue = None
 
     while True:
         stack_value = None
@@ -290,10 +290,10 @@ def decode(data: string) -> Value:
 
         if ch == '{':
             value = Object()
-            stack_value = StackObject(value)
+            stack_value = _StackObject(value)
         elif ch == '[':
             value = List()
-            stack_value = StackList(value)
+            stack_value = _StackList(value)
         elif ch in "}]":
             stack.pop().finalize(ch)
             continue
