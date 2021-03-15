@@ -9,49 +9,25 @@ class Value:
 
     """
 
-    def set_object(self, items: {string: Value}):
-        raise NotImplementedError()
-
     def get_object(self) -> {string: Value}:
         raise NotImplementedError()
 
-    def setitem1(self, key: string, value: Value):
-        raise NotImplementedError()
-
-    def getitem1(self, key: string) -> Value:
-        raise NotImplementedError()
-
-    def set_list(self, items: [Value]):
+    def get(self, key: string) -> Value:
         raise NotImplementedError()
 
     def get_list(self) -> [Value]:
         raise NotImplementedError()
 
-    def setitem2(self, index: i64, value: Value):
-        raise NotImplementedError()
-
-    def getitem2(self, index: i64) -> Value:
-        raise NotImplementedError()
-
-    def set_string(self, value: string):
+    def at(self, index: i64) -> Value:
         raise NotImplementedError()
 
     def get_string(self) -> string:
         raise NotImplementedError()
 
-    def set_integer(self, value: i64):
-        raise NotImplementedError()
-
     def get_integer(self) -> i64:
         raise NotImplementedError()
 
-    def set_float(self, value: f64):
-        raise NotImplementedError()
-
     def get_float(self) -> f64:
-        raise NotImplementedError()
-
-    def set_bool(self, value: bool):
         raise NotImplementedError()
 
     def get_bool(self) -> bool:
@@ -66,16 +42,10 @@ class Object(Value):
     def __init__(self):
         self.items = {}
 
-    def set_object(self, items: {string: Value}):
-        self.items = items
-
     def get_object(self) -> {string: Value}:
         return self.items
 
-    def setitem1(self, key: string, value: Value):
-        self.items[key] = value
-
-    def getitem1(self, key: string) -> Value:
+    def get(self, key: string) -> Value:
         return self.items[key]
 
 class List(Value):
@@ -84,23 +54,14 @@ class List(Value):
     def __init__(self):
         self.items = []
 
-    def set_list(self, items: [Value]):
-        self.items = items
-
     def get_list(self) -> [Value]:
         return self.items
 
-    def setitem2(self, index: i64, value: Value):
-        self.items[index] = value
-
-    def getitem2(self, index: i64) -> Value:
+    def at(self, index: i64) -> Value:
         return self.items[index]
 
 class String(Value):
     value: string
-
-    def set_string(self, value: string):
-        self.value = value
 
     def get_string(self) -> string:
         return self.value
@@ -108,26 +69,17 @@ class String(Value):
 class Integer(Value):
     value: i64
 
-    def set_integer(self, value: i64):
-        self.value = value
-
     def get_integer(self) -> i64:
         return self.value
 
 # class Float(Value):
 #     value: f64
 #
-#     def set_float(self, value: f64):
-#         self.value = value
-#
 #     def get_float(self) -> f64:
 #         return self.value
 
 class Bool(Value):
     value: bool
-
-    def set_bool(self, value: bool):
-        self.value = value
 
     def get_bool(self) -> bool:
         return self.value
@@ -383,19 +335,19 @@ def test_single_value():
 def test_various():
     encoded = "{\"a\": true}"
     decoded = decode(encoded)
-    assert decoded.getitem1("a").get_bool()
+    assert decoded.get("a").get_bool()
 
     encoded = "{\"b\": false, \"c\": []}"
     decoded = decode(encoded)
-    assert not decoded.getitem1("b").get_bool()
-    assert len(decoded.getitem1("c").get_list()) == 0
+    assert not decoded.get("b").get_bool()
+    assert len(decoded.get("c").get_list()) == 0
 
     encoded = "{\"d\": [1, null]}"
     decoded = decode(encoded)
-    assert decoded.getitem1("d").getitem2(0).get_integer() == 1
-    decoded.getitem1("d").getitem2(1).get_null()
+    assert decoded.get("d").at(0).get_integer() == 1
+    decoded.get("d").at(1).get_null()
 
-    match decoded.getitem1("d").getitem2(1):
+    match decoded.get("d").at(1):
         case Null():
             pass
         case _:
@@ -405,13 +357,13 @@ def test_various():
 def test_nested_objects_and_lists():
     encoded = "{\"a\": [true, [4, 2, 3], {\"f\": {\"b\": 1, \"c\": null}}, 55]}"
     decoded = decode(encoded)
-    assert decoded.getitem1("a").getitem2(0).get_bool()
-    assert decoded.getitem1("a").getitem2(1).getitem2(0).get_integer() == 4
-    assert decoded.getitem1("a").getitem2(1).getitem2(1).get_integer() == 2
-    assert decoded.getitem1("a").getitem2(1).getitem2(2).get_integer() == 3
-    assert decoded.getitem1("a").getitem2(2).getitem1("f").getitem1("b").get_integer() == 1
-    decoded.getitem1("a").getitem2(2).getitem1("f").getitem1("c").get_null()
-    assert decoded.getitem1("a").getitem2(3).get_integer() == 55
+    assert decoded.get("a").at(0).get_bool()
+    assert decoded.get("a").at(1).at(0).get_integer() == 4
+    assert decoded.get("a").at(1).at(1).get_integer() == 2
+    assert decoded.get("a").at(1).at(2).get_integer() == 3
+    assert decoded.get("a").at(2).get("f").get("b").get_integer() == 1
+    decoded.get("a").at(2).get("f").get("c").get_null()
+    assert decoded.get("a").at(3).get_integer() == 55
 
 @test
 def test_missing_closing_brace():
