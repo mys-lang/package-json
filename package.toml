@@ -1,8 +1,8 @@
 [package]
 name = "json"
-version = "0.6.0"
+version = "0.7.0"
 authors = ["Erik Moqvist <erik.moqvist@gmail.com>"]
-description = "JSON encoding and decoding."
+description = "JSON decoding."
 
 [dependencies]
 string = "latest"
