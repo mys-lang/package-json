@@ -3,7 +3,7 @@
 About
 =====
 
-JSON decoding.
+JSON decoding in the `Mys programming language`_.
 
 Project: https://github.com/mys-lang/package-json
 
@@ -14,3 +14,5 @@ Functions and types
 
 .. |test| image:: https://github.com/mys-lang/package-json/actions/workflows/pythonpackage.yml/badge.svg
 .. _test: https://github.com/mys-lang/package-json/actions/workflows/pythonpackage.yml
+
+.. _Mys programming language: https://mys-lang.org
