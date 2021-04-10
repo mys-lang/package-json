@@ -145,7 +145,7 @@ class _StackList(_StackValue):
         self.expecting_another_item = False
 
     def handle_value(self, value: Value):
-        self.value.items += value
+        self.value.items.append(value)
         self.expecting_another_item = False
 
     def finalize(self, ch: char):
@@ -280,7 +280,7 @@ def decode(data: string) -> Value:
             raise JsonError("Unexpected value.")
 
         if stack_value is not None:
-            stack += stack_value
+            stack.append(stack_value)
 
     if len(stack) != 0:
         raise JsonError("Missing object or list end.")
