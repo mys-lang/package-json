@@ -10,33 +10,74 @@ class Value:
     """
 
     def get_object(self) -> {string: Value}:
+        """Get an object. Raises an error for non-object values.
+
+        """
+
         raise NotImplementedError()
 
     def get(self, key: string) -> Value:
+        """Get an item in an object. Raises an error for non-object values and
+        if the key is missing.
+
+        """
+
         raise NotImplementedError()
 
     def get_list(self) -> [Value]:
+        """Get a list. Raises an error for non-list values.
+
+        """
+
         raise NotImplementedError()
 
     def at(self, index: i64) -> Value:
+        """Get an item in a list. Raises an error for non-list values.
+
+        """
+
         raise NotImplementedError()
 
     def get_string(self) -> string:
+        """Get a string. Raises an error for non-string values.
+
+        """
+
         raise NotImplementedError()
 
     def get_integer(self) -> i64:
+        """Get an integer. Raises an error for non-integer values.
+
+        """
+
         raise NotImplementedError()
 
     def get_float(self) -> f64:
+        """Get a float. Raises an error for non-float values.
+
+        """
+
         raise NotImplementedError()
 
     def get_bool(self) -> bool:
+        """Get a boolean. Raises an error for non-bool values.
+
+        """
+
         raise NotImplementedError()
 
     def get_null(self):
+        """Get null. Raises an error for non-null values.
+
+        """
+
         raise NotImplementedError()
 
 class Object(Value):
+    """An object.
+
+    """
+
     items: {string: Value}
 
     def __init__(self):
@@ -49,6 +90,10 @@ class Object(Value):
         return self.items[key]
 
 class List(Value):
+    """A list.
+
+    """
+
     items: [Value]
 
     def __init__(self):
@@ -61,12 +106,20 @@ class List(Value):
         return self.items[index]
 
 class String(Value):
+    """A string.
+
+    """
+
     value: string
 
     def get_string(self) -> string:
         return self.value
 
 class Integer(Value):
+    """An integer.
+
+    """
+
     value: i64
 
     def get_integer(self) -> i64:
@@ -79,12 +132,19 @@ class Integer(Value):
 #         return self.value
 
 class Bool(Value):
+    """A boolean.
+
+    """
+
     value: bool
 
     def get_bool(self) -> bool:
         return self.value
 
 class Null(Value):
+    """Null.
+
+    """
 
     def get_null(self):
         pass

@@ -7,8 +7,8 @@ JSON decoding in the `Mys programming language`_.
 
 Project: https://github.com/mys-lang/package-json
 
-Functions and types
-===================
+API
+===
 
 .. mysfile:: src/lib.mys
 
