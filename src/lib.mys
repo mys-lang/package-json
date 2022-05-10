@@ -9,14 +9,14 @@ class Value:
 
     """
 
-    def get_object(self) -> {string: Value}:
+    func get_object(self) -> {string: Value}:
         """Get an object. Raises an error for non-object values.
 
         """
 
         raise NotImplementedError()
 
-    def get(self, key: string) -> Value:
+    func get(self, key: string) -> Value:
         """Get an item in an object. Raises an error for non-object values and
         if the key is missing.
 
@@ -24,49 +24,49 @@ class Value:
 
         raise NotImplementedError()
 
-    def get_list(self) -> [Value]:
+    func get_list(self) -> [Value]:
         """Get a list. Raises an error for non-list values.
 
         """
 
         raise NotImplementedError()
 
-    def at(self, index: i64) -> Value:
+    func at(self, index: i64) -> Value:
         """Get an item in a list. Raises an error for non-list values.
 
         """
 
         raise NotImplementedError()
 
-    def get_string(self) -> string:
+    func get_string(self) -> string:
         """Get a string. Raises an error for non-string values.
 
         """
 
         raise NotImplementedError()
 
-    def get_integer(self) -> i64:
+    func get_integer(self) -> i64:
         """Get an integer. Raises an error for non-integer values.
 
         """
 
         raise NotImplementedError()
 
-    def get_float(self) -> f64:
+    func get_float(self) -> f64:
         """Get a float. Raises an error for non-float values.
 
         """
 
         raise NotImplementedError()
 
-    def get_bool(self) -> bool:
+    func get_bool(self) -> bool:
         """Get a boolean. Raises an error for non-bool values.
 
         """
 
         raise NotImplementedError()
 
-    def get_null(self):
+    func get_null(self):
         """Get null. Raises an error for non-null values.
 
         """
@@ -80,13 +80,13 @@ class Object(Value):
 
     items: {string: Value}
 
-    def __init__(self):
+    func __init__(self):
         self.items = {}
 
-    def get_object(self) -> {string: Value}:
+    func get_object(self) -> {string: Value}:
         return self.items
 
-    def get(self, key: string) -> Value:
+    func get(self, key: string) -> Value:
         return self.items[key]
 
 class List(Value):
@@ -96,13 +96,13 @@ class List(Value):
 
     items: [Value]
 
-    def __init__(self):
+    func __init__(self):
         self.items = []
 
-    def get_list(self) -> [Value]:
+    func get_list(self) -> [Value]:
         return self.items
 
-    def at(self, index: i64) -> Value:
+    func at(self, index: i64) -> Value:
         return self.items[index]
 
 class String(Value):
@@ -112,7 +112,7 @@ class String(Value):
 
     value: string
 
-    def get_string(self) -> string:
+    func get_string(self) -> string:
         return self.value
 
 class Integer(Value):
@@ -122,13 +122,13 @@ class Integer(Value):
 
     value: i64
 
-    def get_integer(self) -> i64:
+    func get_integer(self) -> i64:
         return self.value
 
 # class Float(Value):
 #     value: f64
 #
-#     def get_float(self) -> f64:
+#     func get_float(self) -> f64:
 #         return self.value
 
 class Bool(Value):
@@ -138,7 +138,7 @@ class Bool(Value):
 
     value: bool
 
-    def get_bool(self) -> bool:
+    func get_bool(self) -> bool:
         return self.value
 
 class Null(Value):
@@ -146,22 +146,22 @@ class Null(Value):
 
     """
 
-    def get_null(self):
+    func get_null(self):
         pass
 
 @trait
 class _StackValue:
 
-    def handle_value(self, value: Value):
+    func handle_value(self, value: Value):
         pass
 
-    def handle_comma(self):
+    func handle_comma(self):
         self.expecting_another_item = True
 
-    def handle_colon(self):
+    func handle_colon(self):
         raise NotImplementedError()
 
-    def finalize(self, ch: char):
+    func finalize(self, ch: char):
         pass
 
 class _StackObject(_StackValue):
@@ -169,12 +169,12 @@ class _StackObject(_StackValue):
     key: String
     expecting_another_item: bool
 
-    def __init__(self, value: Object):
+    func __init__(self, value: Object):
         self.value = value
         self.key = None
         self.expecting_another_item = False
 
-    def handle_value(self, value: Value):
+    func handle_value(self, value: Value):
         if self.key is None:
             self.key = value
         else:
@@ -182,11 +182,11 @@ class _StackObject(_StackValue):
             self.key = None
             self.expecting_another_item = False
 
-    def handle_colon(self):
+    func handle_colon(self):
         if self.key is None:
             raise NotImplementedError()
 
-    def finalize(self, ch: char):
+    func finalize(self, ch: char):
         if self.key is not None:
             raise NotImplementedError()
 
@@ -200,22 +200,22 @@ class _StackList(_StackValue):
     value: List
     expecting_another_item: bool
 
-    def __init__(self, value: List):
+    func __init__(self, value: List):
         self.value = value
         self.expecting_another_item = False
 
-    def handle_value(self, value: Value):
+    func handle_value(self, value: Value):
         self.value.items.append(value)
         self.expecting_another_item = False
 
-    def finalize(self, ch: char):
+    func finalize(self, ch: char):
         if self.expecting_another_item:
             raise NotImplementedError()
 
         if ch != ']':
             raise NotImplementedError()
 
-def _decode_string(reader: StringReader) -> String:
+func _decode_string(reader: StringReader) -> String:
     value = ""
 
     while True:
@@ -252,7 +252,7 @@ def _decode_string(reader: StringReader) -> String:
 
     return String(value)
 
-def _decode_number(reader: StringReader, ch: char) -> Value:
+func _decode_number(reader: StringReader, ch: char) -> Value:
     data = ""
 
     while True:
@@ -267,25 +267,25 @@ def _decode_number(reader: StringReader, ch: char) -> Value:
 
     return Integer(i64(data))
 
-def _decode_true(reader: StringReader) -> Bool:
+func _decode_true(reader: StringReader) -> Bool:
     if reader.read(3) != "rue":
         raise JsonError("Corrupt true.")
 
     return Bool(True)
 
-def _decode_false(reader: StringReader) -> Bool:
+func _decode_false(reader: StringReader) -> Bool:
     if reader.read(4) != "alse":
         raise JsonError("Corrupt false.")
 
     return Bool(False)
 
-def _decode_null(reader: StringReader) -> Null:
+func _decode_null(reader: StringReader) -> Null:
     if reader.read(3) != "ull":
         raise JsonError("Corrupt null.")
 
     return Null()
 
-def decode(data: string) -> Value:
+func decode(data: string) -> Value:
     """Decode given JSON string.
 
     """
@@ -350,7 +350,7 @@ def decode(data: string) -> Value:
     return root
 
 @test
-def test_single_value():
+func test_single_value():
     encoded = "{}"
     decoded = decode(encoded)
     assert decoded.get_object() == {}
@@ -392,7 +392,7 @@ def test_single_value():
     # assert encode(decoded) == encoded
 
 @test
-def test_various():
+func test_various():
     encoded = "{\"a\": true}"
     decoded = decode(encoded)
     assert decoded.get("a").get_bool()
@@ -414,7 +414,7 @@ def test_various():
             assert False
 
 @test
-def test_nested_objects_and_lists():
+func test_nested_objects_and_lists():
     encoded = "{\"a\": [true, [4, 2, 3], {\"f\": {\"b\": 1, \"c\": null}}, 55]}"
     decoded = decode(encoded)
     assert decoded.get("a").at(0).get_bool()
@@ -426,7 +426,7 @@ def test_nested_objects_and_lists():
     assert decoded.get("a").at(3).get_integer() == 55
 
 @test
-def test_missing_closing_brace():
+func test_missing_closing_brace():
     encoded = "{"
 
     try:
@@ -438,7 +438,7 @@ def test_missing_closing_brace():
     assert message == "Missing object or list end."
 
 @test
-def test_missing_closing_bracket():
+func test_missing_closing_bracket():
     encoded = "["
 
     try:
@@ -450,7 +450,7 @@ def test_missing_closing_bracket():
     assert message == "Missing object or list end."
 
 @test
-def test_missing_string_end():
+func test_missing_string_end():
     encoded = "\"asdasd"
 
     try:
@@ -462,7 +462,7 @@ def test_missing_string_end():
     assert message == "Out of data when parsing string."
 
 @test
-def test_corrupt_null():
+func test_corrupt_null():
     encoded = "nuls"
 
     try:
@@ -474,7 +474,7 @@ def test_corrupt_null():
     assert message == "Corrupt null."
 
 @test
-def test_corrupt_null_short():
+func test_corrupt_null_short():
     encoded = "nul"
 
     try:
@@ -486,7 +486,7 @@ def test_corrupt_null_short():
     assert message == "Corrupt null."
 
 @test
-def test_corrupt_true():
+func test_corrupt_true():
     encoded = "truu"
 
     try:
@@ -498,7 +498,7 @@ def test_corrupt_true():
     assert message == "Corrupt true."
 
 @test
-def test_corrupt_false():
+func test_corrupt_false():
     encoded = "fALSE"
 
     try:
