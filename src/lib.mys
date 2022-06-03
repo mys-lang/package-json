@@ -125,11 +125,15 @@ class Integer(Value):
     func get_integer(self) -> i64:
         return self.value
 
-# class Float(Value):
-#     value: f64
-#
-#     func get_float(self) -> f64:
-#         return self.value
+class Float(Value):
+    """A float.
+
+    """
+
+    value: f64
+
+    func get_float(self) -> f64:
+        return self.value
 
 class Bool(Value):
     """A boolean.
@@ -255,6 +259,27 @@ func _decode_string(reader: StringReader) -> String:
 func _decode_number(reader: StringReader, ch: char) -> Value:
     data = ""
 
+    if ch == '-':
+        data += ch
+    else:
+        reader.unget()
+
+    data += _decode_digits(reader)
+    fraction = _decode_fraction(reader)
+    exponent = _decode_exponent(reader)
+
+    if fraction is None:
+        return Integer(i64(data + exponent))
+    else:
+        return Float(f64(data + fraction + exponent))
+
+func _decode_digits(reader: StringReader) -> string:
+    data = ""
+    ch = reader.get()
+
+    if ch not in "0123456789":
+        raise JsonError("Corrupt number.")
+
     while True:
         data += ch
         ch = reader.get()
@@ -265,7 +290,20 @@ func _decode_number(reader: StringReader, ch: char) -> Value:
 
             break
 
-    return Integer(i64(data))
+    return data
+
+func _decode_fraction(reader: StringReader) -> string:
+    if reader.peek() != '.':
+        return None
+
+    reader.get()
+    data = "."
+    data += _decode_digits(reader)
+
+    return data
+
+func _decode_exponent(reader: StringReader) -> string:
+    return ""
 
 func _decode_true(reader: StringReader) -> Bool:
     if reader.read(3) != "rue":
@@ -354,42 +392,42 @@ func test_single_value():
     encoded = "{}"
     decoded = decode(encoded)
     assert decoded.get_object() == {}
-    # assert encode(decoded) == encoded
 
     encoded = "[]"
     decoded = decode(encoded)
     assert decoded.get_list() == []
-    # assert encode(decoded) == encoded
 
     encoded = "\"hi\""
     decoded = decode(encoded)
     assert decoded.get_string() == "hi"
-    # assert encode(decoded) == encoded
 
     encoded = "1"
     decoded = decode(encoded)
     assert decoded.get_integer() == 1
-    # assert encode(decoded) == encoded
 
-    # encoded = "2.0"
-    # decoded = decode(encoded)
-    # assert decoded.get_float() == 2.0
-    # assert encode(decoded) == encoded
+    encoded = "2.0"
+    decoded = decode(encoded)
+    assert decoded.get_float() == 2.0
+
+    encoded = "-2.0"
+    decoded = decode(encoded)
+    assert decoded.get_float() == -2.0
+
+    encoded = "20.05"
+    decoded = decode(encoded)
+    assert decoded.get_float() == 20.05
 
     encoded = "false"
     decoded = decode(encoded)
     assert not decoded.get_bool()
-    # assert encode(decoded) == encoded
 
     encoded = "true"
     decoded = decode(encoded)
     assert decoded.get_bool()
-    # assert encode(decoded) == encoded
 
     encoded = "null"
     decoded = decode(encoded)
     decoded.get_null()
-    # assert encode(decoded) == encoded
 
 @test
 func test_various():
