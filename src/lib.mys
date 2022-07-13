@@ -3,8 +3,7 @@ from string import StringReader
 class JsonError(Error):
     message: string
 
-@trait
-class Value:
+trait Value:
     """A value in a JSON document.
 
     """
@@ -153,8 +152,7 @@ class Null(Value):
     func get_null(self):
         pass
 
-@trait
-class _StackValue:
+trait _StackValue:
 
     func handle_value(self, value: Value):
         pass
