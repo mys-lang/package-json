@@ -385,8 +385,7 @@ func decode(data: string) -> Value:
 
     return root
 
-@test
-func test_single_value():
+test single_value():
     encoded = "{}"
     decoded = decode(encoded)
     assert decoded.get_object() == {}
@@ -427,8 +426,7 @@ func test_single_value():
     decoded = decode(encoded)
     decoded.get_null()
 
-@test
-func test_various():
+test various():
     encoded = "{\"a\": true}"
     decoded = decode(encoded)
     assert decoded.get("a").get_bool()
@@ -449,8 +447,7 @@ func test_various():
         case _:
             assert False
 
-@test
-func test_nested_objects_and_lists():
+test nested_objects_and_lists():
     encoded = "{\"a\": [true, [4, 2, 3], {\"f\": {\"b\": 1, \"c\": null}}, 55]}"
     decoded = decode(encoded)
     assert decoded.get("a").at(0).get_bool()
@@ -461,8 +458,7 @@ func test_nested_objects_and_lists():
     decoded.get("a").at(2).get("f").get("c").get_null()
     assert decoded.get("a").at(3).get_integer() == 55
 
-@test
-func test_missing_closing_brace():
+test missing_closing_brace():
     encoded = "{"
 
     try:
@@ -473,8 +469,7 @@ func test_missing_closing_brace():
 
     assert message == "Missing object or list end."
 
-@test
-func test_missing_closing_bracket():
+test missing_closing_bracket():
     encoded = "["
 
     try:
@@ -485,8 +480,7 @@ func test_missing_closing_bracket():
 
     assert message == "Missing object or list end."
 
-@test
-func test_missing_string_end():
+test missing_string_end():
     encoded = "\"asdasd"
 
     try:
@@ -497,8 +491,7 @@ func test_missing_string_end():
 
     assert message == "Out of data when parsing string."
 
-@test
-func test_corrupt_null():
+test corrupt_null():
     encoded = "nuls"
 
     try:
@@ -509,8 +502,7 @@ func test_corrupt_null():
 
     assert message == "Corrupt null."
 
-@test
-func test_corrupt_null_short():
+test corrupt_null_short():
     encoded = "nul"
 
     try:
@@ -521,8 +513,7 @@ func test_corrupt_null_short():
 
     assert message == "Corrupt null."
 
-@test
-func test_corrupt_true():
+test corrupt_true():
     encoded = "truu"
 
     try:
@@ -533,8 +524,7 @@ func test_corrupt_true():
 
     assert message == "Corrupt true."
 
-@test
-func test_corrupt_false():
+test corrupt_false():
     encoded = "fALSE"
 
     try:
