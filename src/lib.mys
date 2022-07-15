@@ -370,7 +370,7 @@ func decode(data: string) -> Value:
 
         if root is None:
             root = value
-        elif len(stack) > 0:
+        elif stack.length() > 0:
             stack[-1].handle_value(value)
         else:
             raise JsonError("Unexpected value.")
@@ -378,7 +378,7 @@ func decode(data: string) -> Value:
         if stack_value is not None:
             stack.append(stack_value)
 
-    if len(stack) != 0:
+    if stack.length() != 0:
         raise JsonError("Missing object or list end.")
     elif root is None:
         raise JsonError("No root value found.")
@@ -434,7 +434,7 @@ test various():
     encoded = "{\"b\": false, \"c\": []}"
     decoded = decode(encoded)
     assert not decoded.get("b").get_bool()
-    assert len(decoded.get("c").get_list()) == 0
+    assert decoded.get("c").get_list().length() == 0
 
     encoded = "{\"d\": [1, null]}"
     decoded = decode(encoded)
