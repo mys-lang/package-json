@@ -8,65 +8,65 @@ trait Value:
 
     """
 
-    func get_object(self) -> {string: Value}:
-        """Get an object. Raises an error for non-object values.
+    func object(self) -> {string: Value}:
+        """As an object. Raises an error for non-object values.
 
         """
 
         raise NotImplementedError()
 
     func get(self, key: string) -> Value:
-        """Get an item in an object. Raises an error for non-object values and
+        """As an item in an object. Raises an error for non-object values and
         if the key is missing.
 
         """
 
         raise NotImplementedError()
 
-    func get_list(self) -> [Value]:
-        """Get a list. Raises an error for non-list values.
+    func list(self) -> [Value]:
+        """As a list. Raises an error for non-list values.
 
         """
 
         raise NotImplementedError()
 
     func at(self, index: i64) -> Value:
-        """Get an item in a list. Raises an error for non-list values.
+        """As an item in a list. Raises an error for non-list values.
 
         """
 
         raise NotImplementedError()
 
-    func get_string(self) -> string:
-        """Get a string. Raises an error for non-string values.
+    func string(self) -> string:
+        """As a string. Raises an error for non-string values.
 
         """
 
         raise NotImplementedError()
 
-    func get_integer(self) -> i64:
-        """Get an integer. Raises an error for non-integer values.
+    func integer(self) -> i64:
+        """As an integer. Raises an error for non-integer values.
 
         """
 
         raise NotImplementedError()
 
-    func get_float(self) -> f64:
-        """Get a float. Raises an error for non-float values.
+    func float(self) -> f64:
+        """As a float. Raises an error for non-float values.
 
         """
 
         raise NotImplementedError()
 
-    func get_bool(self) -> bool:
-        """Get a boolean. Raises an error for non-bool values.
+    func bool(self) -> bool:
+        """As a boolean. Raises an error for non-bool values.
 
         """
 
         raise NotImplementedError()
 
-    func get_null(self):
-        """Get null. Raises an error for non-null values.
+    func null(self):
+        """As null. Raises an error for non-null values.
 
         """
 
@@ -82,7 +82,7 @@ class Object(Value):
     func __init__(self):
         self.items = {}
 
-    func get_object(self) -> {string: Value}:
+    func object(self) -> {string: Value}:
         return self.items
 
     func get(self, key: string) -> Value:
@@ -98,7 +98,7 @@ class List(Value):
     func __init__(self):
         self.items = []
 
-    func get_list(self) -> [Value]:
+    func list(self) -> [Value]:
         return self.items
 
     func at(self, index: i64) -> Value:
@@ -111,7 +111,7 @@ class String(Value):
 
     value: string
 
-    func get_string(self) -> string:
+    func string(self) -> string:
         return self.value
 
 class Integer(Value):
@@ -121,7 +121,7 @@ class Integer(Value):
 
     value: i64
 
-    func get_integer(self) -> i64:
+    func integer(self) -> i64:
         return self.value
 
 class Float(Value):
@@ -131,7 +131,7 @@ class Float(Value):
 
     value: f64
 
-    func get_float(self) -> f64:
+    func float(self) -> f64:
         return self.value
 
 class Bool(Value):
@@ -141,7 +141,7 @@ class Bool(Value):
 
     value: bool
 
-    func get_bool(self) -> bool:
+    func bool(self) -> bool:
         return self.value
 
 class Null(Value):
@@ -149,7 +149,7 @@ class Null(Value):
 
     """
 
-    func get_null(self):
+    func null(self):
         pass
 
 trait _StackValue:
@@ -180,7 +180,7 @@ class _StackObject(_StackValue):
         if self.key is None:
             self.key = value
         else:
-            self.value.items[self.key.get_string()] = value
+            self.value.items[self.key.string()] = value
             self.key = None
             self.expecting_another_item = False
 
@@ -388,58 +388,58 @@ func decode(data: string) -> Value:
 test single_value():
     encoded = "{}"
     decoded = decode(encoded)
-    assert decoded.get_object() == {}
+    assert decoded.object() == {}
 
     encoded = "[]"
     decoded = decode(encoded)
-    assert decoded.get_list() == []
+    assert decoded.list() == []
 
     encoded = "\"hi\""
     decoded = decode(encoded)
-    assert decoded.get_string() == "hi"
+    assert decoded.string() == "hi"
 
     encoded = "1"
     decoded = decode(encoded)
-    assert decoded.get_integer() == 1
+    assert decoded.integer() == 1
 
     encoded = "2.0"
     decoded = decode(encoded)
-    assert decoded.get_float() == 2.0
+    assert decoded.float() == 2.0
 
     encoded = "-2.0"
     decoded = decode(encoded)
-    assert decoded.get_float() == -2.0
+    assert decoded.float() == -2.0
 
     encoded = "20.05"
     decoded = decode(encoded)
-    assert decoded.get_float() == 20.05
+    assert decoded.float() == 20.05
 
     encoded = "false"
     decoded = decode(encoded)
-    assert not decoded.get_bool()
+    assert not decoded.bool()
 
     encoded = "true"
     decoded = decode(encoded)
-    assert decoded.get_bool()
+    assert decoded.bool()
 
     encoded = "null"
     decoded = decode(encoded)
-    decoded.get_null()
+    decoded.null()
 
 test various():
     encoded = "{\"a\": true}"
     decoded = decode(encoded)
-    assert decoded.get("a").get_bool()
+    assert decoded.get("a").bool()
 
     encoded = "{\"b\": false, \"c\": []}"
     decoded = decode(encoded)
-    assert not decoded.get("b").get_bool()
-    assert decoded.get("c").get_list().length() == 0
+    assert not decoded.get("b").bool()
+    assert decoded.get("c").list().length() == 0
 
     encoded = "{\"d\": [1, null]}"
     decoded = decode(encoded)
-    assert decoded.get("d").at(0).get_integer() == 1
-    decoded.get("d").at(1).get_null()
+    assert decoded.get("d").at(0).integer() == 1
+    decoded.get("d").at(1).null()
 
     match decoded.get("d").at(1):
         case Null():
@@ -450,13 +450,13 @@ test various():
 test nested_objects_and_lists():
     encoded = "{\"a\": [true, [4, 2, 3], {\"f\": {\"b\": 1, \"c\": null}}, 55]}"
     decoded = decode(encoded)
-    assert decoded.get("a").at(0).get_bool()
-    assert decoded.get("a").at(1).at(0).get_integer() == 4
-    assert decoded.get("a").at(1).at(1).get_integer() == 2
-    assert decoded.get("a").at(1).at(2).get_integer() == 3
-    assert decoded.get("a").at(2).get("f").get("b").get_integer() == 1
-    decoded.get("a").at(2).get("f").get("c").get_null()
-    assert decoded.get("a").at(3).get_integer() == 55
+    assert decoded.get("a").at(0).bool()
+    assert decoded.get("a").at(1).at(0).integer() == 4
+    assert decoded.get("a").at(1).at(1).integer() == 2
+    assert decoded.get("a").at(1).at(2).integer() == 3
+    assert decoded.get("a").at(2).get("f").get("b").integer() == 1
+    decoded.get("a").at(2).get("f").get("c").null()
+    assert decoded.get("a").at(3).integer() == 55
 
 test missing_closing_brace():
     encoded = "{"
