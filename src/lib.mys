@@ -241,10 +241,10 @@ func _decode_string(reader: StringReader) -> String:
             elif ch == 't':
                 value += '\t'
             elif ch == 'u':
-                value += char(i32(reader.get()) << 24
-                              | i32(reader.get()) << 16
-                              | i32(reader.get()) << 8
-                              | i32(reader.get()) << 0)
+                value += char(i64(reader.get()) << 24
+                              | i64(reader.get()) << 16
+                              | i64(reader.get()) << 8
+                              | i64(reader.get()) << 0)
             else:
                 raise JsonError(f"Unexpected character '{ch}'.")
         elif ch == '':
