@@ -168,7 +168,7 @@ trait _StackValue:
 
 class _StackObject(_StackValue):
     value: Object
-    key: String
+    key: String?
     expecting_another_item: bool
 
     func __init__(self, value: Object):
@@ -290,7 +290,7 @@ func _decode_digits(reader: StringReader) -> string:
 
     return data
 
-func _decode_fraction(reader: StringReader) -> string:
+func _decode_fraction(reader: StringReader) -> string?:
     if reader.peek() != '.':
         return None
 
@@ -327,10 +327,10 @@ func decode(data: string) -> Value:
     """
 
     reader = StringReader(data)
-    root: Value = None
+    root: Value? = None
     stack: [_StackValue] = []
-    value: Value = None
-    stack_value: _StackValue = None
+    value: Value? = None
+    stack_value: _StackValue? = None
 
     while True:
         stack_value = None
